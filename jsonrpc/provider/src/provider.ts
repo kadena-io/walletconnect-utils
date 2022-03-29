@@ -114,7 +114,6 @@ export class JsonRpcProvider extends IJsonRpcProvider {
 
   protected async close() {
     await this.connection.close();
-    this.events.emit("disconnect");
   }
 }
 
