@@ -61,7 +61,6 @@ export class WsConnection implements IJsonRpcConnection {
       throw new Error("Connection already closed");
     }
     this.socket.close();
-    this.onClose();
   }
 
   public async send(payload: JsonRpcPayload, context?: any): Promise<void> {
