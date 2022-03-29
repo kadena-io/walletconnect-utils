@@ -16,6 +16,8 @@ export class JsonRpcProvider extends IJsonRpcProvider {
 
   public connection: IJsonRpcConnection;
 
+  private registeredEvents = false;
+
   constructor(connection: IJsonRpcConnection) {
     super(connection);
     this.connection = this.setConnection(connection);
@@ -106,9 +108,12 @@ export class JsonRpcProvider extends IJsonRpcProvider {
     }
     this.connection = this.setConnection(connection);
     await this.connection.open();
-    this.connection.on("payload", (payload: JsonRpcPayload) => this.onPayload(payload));
-    this.connection.on("close", () => this.events.emit("disconnect"));
-    this.connection.on("error", (error: Error) => this.events.emit("error", error));
+    if (!this.registeredEvents) {
+      this.registeredEvents = true;
+      this.connection.on("payload", (payload: JsonRpcPayload) => this.onPayload(payload));
+      this.connection.on("close", () => this.events.emit("disconnect"));
+      this.connection.on("error", (error: Error) => this.events.emit("error", error));
+    }
     this.events.emit("connect");
   }
 
